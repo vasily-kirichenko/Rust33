@@ -10,22 +10,22 @@ fn exists_in_win(m_char: char, s: &str, offset: i32, rad: i32) -> bool {
     if end_at - start_at < 0 {
         false
     } else {
-        for c in s.chars().skip(start_at as usize).take((end_at - start_at) as usize) {
-            if c == m_char {
-                return true;
-            }
-        }
-        return false;
+        s.chars()
+            .skip(start_at as usize)
+            .take((end_at - start_at) as usize)
+            .any(|c| c == m_char)
     }
 }
 
 fn common_chars(chars1: &str, chars2: &str, match_radius: i32) -> Vec<char> {
     let mut result = Vec::with_capacity(chars1.len());
+
     for (i, c) in chars1.char_indices().rev() {
         if exists_in_win(c, chars2, i as i32, match_radius) {
             result.push(c);
         }
     }
+
     result.reverse();
     result
 }
@@ -43,8 +43,8 @@ fn jaro(s1: &str, s2: &str) -> f64 {
 
     let transpositions = {
         let mut mismatches = 0.0;
-        for i in 0..c1.len().min(c2.len()) {
-            if c1[i] != c2[i] {
+        for (i, j) in c1.iter().zip(c2.iter()) {
+            if i != j {
                 mismatches += 1.0
             }
         }
