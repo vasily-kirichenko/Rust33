@@ -5,3 +5,6 @@ authors = ["Vasily Kirichenko <vaskir@gmail.com>"]
 
 [dependencies]
 time = "*"
+
+[profile.release]
+debug = true
