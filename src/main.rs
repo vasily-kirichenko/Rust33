@@ -34,18 +34,8 @@ fn jaro(s1: &str, s2: &str) -> f64 {
     let c2length = c2.len() as f64;
 
     let transpositions = {
-        let mismatches = {
-            let length = c1.len().min(c2.len());
-            let mut mismatches = 0.0;
-            for i in 0..length {
-                if c1[i] != c2[i] {
-                    mismatches += 1.0
-                }
-            }
-            mismatches
-        };
-
-        (mismatches + (c1length - c2length).abs()) / 2.0
+        let mismatches = c1.iter().zip(c2.iter()).filter(|&(x, y)| x != y).count();
+        (mismatches as f64 + (c1length - c2length).abs()) / 2.0
     };
 
     let t_length = c1length.max(c2length);
