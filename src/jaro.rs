@@ -1,3 +1,4 @@
+
 fn exists_in_win(m_char: char, s: &str, offset: usize, rad: usize) -> bool {
     let start_at = (offset as i32 - rad as i32).max(0) as usize;
     let end_at = (offset + rad).min(s.len());
