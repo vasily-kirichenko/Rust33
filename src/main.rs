@@ -10,14 +10,15 @@ fn exists_in_win(m_char: char, s: &str, offset: usize, rad: usize) -> bool {
 
 fn common_chars(chars1: &str, chars2: &str, match_radius: usize) -> Vec<char> {
     let mut result = Vec::with_capacity(chars1.len());
-    let mut count = 0;
-
-    for (i, c) in chars1.char_indices() {
-        if exists_in_win(c, chars2, i, match_radius) {
-            result.push(c);
-        }
-    }
-
+    result.extend(
+        chars1.char_indices().filter_map(|(i, c)| {
+            if exists_in_win(c, chars2, i, match_radius) {
+                Some(c)
+            } else {
+                None
+            }
+        })
+    );
     result
 }
 
@@ -29,6 +30,8 @@ fn jaro(s1: &str, s2: &str) -> f64 {
 
     let c1 = common_chars(s1, s2, match_radius);
     let c2 = common_chars(s2, s1, match_radius);
+    let c1length = c1.len() as f64;
+    let c2length = c2.len() as f64;
 
     let transpositions = {
         let mismatches = {
@@ -42,11 +45,11 @@ fn jaro(s1: &str, s2: &str) -> f64 {
             mismatches
         };
 
-        (mismatches + (c1.len() as f64 - c2.len() as f64).abs()) / 2.0
+        (mismatches + (c1length - c2length).abs()) / 2.0
     };
 
-    let t_length = c1.len().max(c2.len()) as f64;
-    let result = (c1.len() as f64 / s1.len() as f64 + c2.len() as f64 / s2.len() as f64 + (t_length - transpositions) / t_length) / 3.0;
+    let t_length = c1length.max(c2length);
+    let result = (c1length / s1.len() as f64 + c2length / s2.len() as f64 + (t_length - transpositions) / t_length) / 3.0;
     if result.is_nan() { 0.0 } else { result }
 }
 
